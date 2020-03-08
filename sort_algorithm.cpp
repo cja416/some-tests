@@ -1,7 +1,10 @@
-#include<iostream>
-#include<vector>
-#include<ctime>
-#include <windows.h>
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+#include <stdlib.h>
 using namespace std;
 
 void swap(vector<int>& a, int i, int j) {
@@ -144,9 +147,13 @@ void sort_this_vector(vector<int>& a) {
 	if (num<'0' || num>'9')
 		cout << "please input a num abovemention" << endl;
 
-	DWORD time_start, time_end;
+	//DWORD time_start, time_end;
+	int time_start=0,time_end=0;
+	struct timeval tv;
 	vector<int> tmp(a.size(), 0);
-	time_start = GetTickCount(); //从操作系统启动经过的毫秒数
+	//time_start = GetTickCount(); //从操作系统启动经过的毫秒数
+	gettimeofday(&tv,NULL);
+	time_start = tv.tv_usec;
 	switch (num)
 	{
 	case '1':bubble_sort(a); break;
@@ -159,20 +166,21 @@ void sort_this_vector(vector<int>& a) {
 		cout << "please input a num abovemention" << endl;
 		break;
 	}
-	time_end = GetTickCount();
-	cout << "used Time = " << (time_end - time_start) << "ms\n";
+	//time_end = GetTickCount();
+	gettimeofday(&tv,NULL);
+	time_end = tv.tv_usec;
+	cout << "used Time = " << (time_end - time_start) << "us\n";
 }
 
 int main() {
 
 	vector<int> a;
-	a.push_back(5);
-	a.push_back(3);
-	a.push_back(2);
-	a.push_back(7);
-	a.push_back(9);
-	a.push_back(11);
-	a.push_back(8);
+
+	srand((unsigned int) time(NULL));
+	int count = 200;
+	while(count--){
+		a.emplace_back(rand() % 500);
+	}
 	cout << "before sort: " << endl;
 	for (int i = 0; i < a.size(); i++) {
 		cout << a[i] << ", ";
@@ -185,7 +193,8 @@ int main() {
 	for (int i = 0; i < a.size(); i++) {
 		cout << a[i] << ", ";
 	}
+	cout<<endl;
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
